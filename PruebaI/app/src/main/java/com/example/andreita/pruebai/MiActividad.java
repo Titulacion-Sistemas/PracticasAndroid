@@ -63,13 +63,14 @@ public class MiActividad extends ActionBarActivity {
             boolean resul = true;
 
 
-            final String NAMESPACE = "main.miServicio";
-            final String URL="http://192.168.10.21:8080/miservicio?wsdl";
-            final String METHOD_NAME = "hellowithsql";
-            final String SOAP_ACTION = "main.miServicio/hellowithsql";
+            final String NAMESPACE = "serviciosWeb.views";
+            final String URL="http://coniel.servehttp.com/sw/usuarios.wsdl";
+            final String METHOD_NAME = "login";
+            final String SOAP_ACTION = "serviciosWeb.views/login";
 
             SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-            request.addProperty("message",((EditText) findViewById(R.id.editText)).getText().toString());
+            request.addProperty("u",((Object)((EditText) findViewById(R.id.editText)).getText().toString()));
+            request.addProperty("p","1234");
 
             SoapSerializationEnvelope envelope =
                     new SoapSerializationEnvelope(SoapEnvelope.VER10);
@@ -87,7 +88,7 @@ public class MiActividad extends ActionBarActivity {
 
                 resSoap =(Object)envelope.getResponse();
 
-                System.out.println("valor asignado a la respuesta");
+                System.out.println("valor asignado a la respuesta: "+resSoap);
 
                 return resSoap;
 
@@ -123,12 +124,12 @@ public class MiActividad extends ActionBarActivity {
             if (result != null)
             {
 
-                SoapPrimitive resSoap = (SoapPrimitive)result;
+                SoapObject resSoap = (SoapObject)result;
 
-//                SoapObject ic = (SoapObject)resSoap.getProperty(0);
+                SoapPrimitive ic = (SoapPrimitive)resSoap.getProperty(0);
 
                 System.out.print(resSoap);
-                ((TextView) findViewById(R.id.textView)).setText(resSoap.toString());
+                ((TextView) findViewById(R.id.textView)).setText(""+ic);
 
                /* //Rellenamos la lista con los nombres de los clientes
                 final String[] datos = new String[listaClientes.length];
