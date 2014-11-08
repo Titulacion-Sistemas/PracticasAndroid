@@ -1,0 +1,150 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.jhonsson.practicacamara.MyActivity">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical">
+
+                <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical"
+                    android:padding="10dp">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/txtTitulo"
+                       android:textSize="@dimen/titulo"
+                       android:layout_gravity="center_horizontal"
+                       android:text="@string/titulo"
+                       android:textStyle="bold"
+                       android:textColor="@color/colorAzul"
+                       android:padding="5dp"/>
+
+               </LinearLayout>
+
+                <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   style="@style/LayoutStilo"
+                   android:padding="10dp"
+                   android:orientation="vertical">
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:id="@+id/txtCuenta"
+                           android:text="@string/dato"
+                           android:textStyle="bold"
+                           android:textSize="@dimen/dato"
+                           android:padding="10dp"/>
+
+                       <EditText
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:gravity="right"
+                           android:id="@+id/editTextCuenta"/>
+                   </LinearLayout>
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:paddingTop="20dp"
+                       android:paddingRight="20dp"
+                       android:paddingBottom="10dp"
+                       android:orientation="vertical"
+                       android:layout_gravity="bottom"
+                       android:gravity="right">
+
+                       <Button
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:id="@+id/btnSiguiente"
+                           style="@style/ButtonStilo"
+                           android:text="@string/textoBoton"
+                           android:textColor="@color/colorBlanco"
+                           android:padding="10dp"
+                           android:clickable="true"/>
+
+                   </LinearLayout>
+
+               </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <Gallery
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/galleryFotos"
+                            android:spacing="10dp"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp">
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/btnAgregar"
+                            android:gravity="center"
+                            android:layout_gravity="left"
+                            android:text="Agregar"/>
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/btnEliminar"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_gravity="right"
+                            android:text="Eliminar"/>
+
+                        </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>
