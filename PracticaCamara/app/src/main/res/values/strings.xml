@@ -9,5 +9,8 @@
     <string name="titulo">Ingrese los Datos</string>
     <string name="dato">Cuenta</string>
     <string name="textoBoton">Capturar</string>
+    <string name="tituloApp"> Photography App</string>
+    <string name="title_activity_lista_galeria_diaria">ListaGaleriaDiaria</string>
+    <string name="title_activity_principal">Principal</string>
 
 </resources>

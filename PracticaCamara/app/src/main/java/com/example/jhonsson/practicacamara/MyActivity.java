@@ -1,34 +1,30 @@
 package com.example.jhonsson.practicacamara;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 
 public class MyActivity extends Activity {
 
     private Button boton, botonAgregar, botonEliminar;
     private EditText numCuenta;
-    private ImageView img;
     private Gallery galeria;
     ImageAdapter imagenes;
 
@@ -37,9 +33,72 @@ public class MyActivity extends Activity {
     private Button boton1;
     private ImageView img1;
     String cuenta;
-
+    private List<String> fileList = new ArrayList<String>();
+    ListView listaFechas ;
+    TextView fechasA;
+    ListaAdaptadorFechas listFechas;
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_my);
+
+
+        ListView listaFechas = (ListView) findViewById(R.id.listFechas);
+        fechasA = (TextView) findViewById(R.id.txtListaFechas);
+        String fechaDia = getDatePhone();
+        Log.e("Fecha", "Hoy" + fechaDia);
+
+
+        try {
+            File directorio = new File(Environment
+                    .getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS))
+                    .getAbsolutePath());
+            ListDir(directorio);
+            /*BufferedReader fin =
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    new FileInputStream(directorio)));
+
+            String texto = fin.toString();
+            Log.e("E", "Texto:" + texto);*/
+
+        }
+        catch (Exception ex){
+            Log.e("Ficheros", "Error al escribir fichero a tarjeta SD" + ex);}
+
+    }
+
+    void ListDir(File directorio){
+        File[] files = directorio.listFiles();
+        Log.i("Informacion", "valor files" +files);
+        fileList.clear();
+        for (File file : files){
+            fileList.add(file.getPath());
+        }
+        //esto vale
+
+        ArrayAdapter<String> directoryList
+                    = new ArrayAdapter<String>(this, R.layout.filafecha, fileList);
+
+        /*ArrayAdapter<String> fecha
+                = new ArrayAdapter<String>(this, R.layout.filafecha, Integer.parseInt(getDatePhone()));*/
+
+    }
+
+    private String getDatePhone(){
+
+        Calendar cal = new GregorianCalendar();
+        Date date = cal.getTime();
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        String formato = df.format(date);
+
+        return formato;
+    }
+
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
@@ -54,25 +113,24 @@ public class MyActivity extends Activity {
         galeria = (Gallery) findViewById(R.id.galleryFotos);
         galeria.setAdapter(imagenes);
 
+
         //accion para el boton
         boton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                  /* Intent i = new Intent(MyActivity.this, MyCam.class);
+                  *//* Intent i = new Intent(MyActivity.this, MyCam.class);
                     i.putExtra("cuenta", numCuenta.getText().toString());
                     startActivity(i);
-                    finish();*/
+                    finish();*//*
 
                 //Esto iba en el Onclick
-
                 //Agregue
                 cuenta = numCuenta.getText().toString();
-                File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/CONIEL/" + cuenta );
+                File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/CONIEL/" + fechaActual.toString()  + cuenta );
 
                 //Si no existe crea la carpeta donde se guardaran las fotos
-                directorio.mkdirs();
                 File file = new File (directorio, getCode() + ".jpg");
 
                 mi_foto = new File(file +"");
@@ -122,6 +180,7 @@ public class MyActivity extends Activity {
 
     }
 
+
     //Esto tambien agregue
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -153,7 +212,7 @@ public class MyActivity extends Activity {
         String photoCode = "pic_" + date;
         Log.i("INFORMACION", "Codigo :" + photoCode);
         return photoCode;
-    }
+    }*/
 
 
 }
