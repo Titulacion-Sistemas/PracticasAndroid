@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp"
+    tools:context="com.example.jhonsson.practicacamara.Galeria"
+    android:orientation="vertical"
+    android:layout_gravity="center_vertical">
+
+    <GridView
+        android:id="@+id/gridViewGaleria"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="5dp">
+    </GridView>
+
+</LinearLayout>

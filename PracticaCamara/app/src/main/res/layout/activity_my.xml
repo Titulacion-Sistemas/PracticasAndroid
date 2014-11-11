@@ -1,183 +1,103 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.jhonsson.practicacamara.MyActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="15dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+            android:padding="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtTituloApp"
-                android:text="@string/tituloApp"
-                android:layout_gravity="center_horizontal"
-                android:textStyle="bold"
-                android:textColor="@color/colorAzul"
-                android:padding="5dp"
-                android:textSize="@dimen/titulo"/>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/txtTitulo"
+               android:textSize="@dimen/titulo"
+               android:layout_gravity="center_horizontal"
+               android:text="@string/titulo"
+               android:textStyle="bold"
+               android:textColor="@color/colorAzul"
+               android:padding="5dp"/>
 
         </LinearLayout>
+
+        <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           style="@style/LayoutStilo"
+           android:padding="10dp"
+           android:orientation="vertical">
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal">
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/txtCuenta"
+                   android:text="@string/dato"
+                   android:textStyle="bold"
+                   android:textSize="@dimen/dato"
+                   android:padding="10dp"/>
+
+               <EditText
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/editTextCuenta"/>
+
+           </LinearLayout>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingTop="20dp"
+               android:paddingRight="20dp"
+               android:paddingBottom="10dp"
+               android:orientation="vertical"
+               android:layout_gravity="bottom"
+               android:gravity="right">
+
+               <Button
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/btnSiguiente"
+                   style="@style/ButtonStilo"
+                   android:text="@string/textoBoton"
+                   android:textColor="@color/colorBlanco"
+                   android:padding="10dp"
+                   android:clickable="true"/>
+
+           </LinearLayout>
+
+       </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="40dp">
-
-           <!-- <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    android:layout_gravity="center_vertical">
-
-                    <LinearLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:orientation="vertical"
-                        android:padding="10dp">
-
-                       <TextView
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:id="@+id/txtTitulo"
-                           android:textSize="@dimen/titulo"
-                           android:layout_gravity="center_horizontal"
-                           android:text="@string/titulo"
-                           android:textStyle="bold"
-                           android:textColor="@color/colorAzul"
-                           android:padding="5dp"/>
-
-                   </LinearLayout>
-
-                    <LinearLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       style="@style/LayoutStilo"
-                       android:padding="10dp"
-                       android:orientation="vertical">
-
-                       <LinearLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:orientation="horizontal">
-
-                           <TextView
-                               android:layout_width="wrap_content"
-                               android:layout_height="wrap_content"
-                               android:id="@+id/txtCuenta"
-                               android:text="@string/dato"
-                               android:textStyle="bold"
-                               android:textSize="@dimen/dato"
-                               android:padding="10dp"/>
-
-                           <EditText
-                               android:layout_width="match_parent"
-                               android:layout_height="wrap_content"
-                               android:id="@+id/editTextCuenta"/>
-
-                       </LinearLayout>
-
-                       <LinearLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:paddingTop="20dp"
-                           android:paddingRight="20dp"
-                           android:paddingBottom="10dp"
-                           android:orientation="vertical"
-                           android:layout_gravity="bottom"
-                           android:gravity="right">
-
-                           <Button
-                               android:layout_width="wrap_content"
-                               android:layout_height="wrap_content"
-                               android:id="@+id/btnSiguiente"
-                               style="@style/ButtonStilo"
-                               android:text="@string/textoBoton"
-                               android:textColor="@color/colorBlanco"
-                               android:padding="10dp"
-                               android:clickable="true"/>
-
-                       </LinearLayout>
-
-                   </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="20dp">
-
-                            <Gallery
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/galleryFotos"
-                                android:spacing="10dp"
-                                android:layout_gravity="center"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="20dp"
-                            android:visibility="invisible">
-
-                            <Button
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/btnAgregar"
-                                android:gravity="center"
-                                android:layout_gravity="left"
-                                android:text="Agregar"/>
-
-                            <Button
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/btnEliminar"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:layout_gravity="right"
-                                android:text="Eliminar"/>
-
-                            </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </ScrollView>-->
+            android:paddingTop="15dp">
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/listFechas"/>
+                android:layout_height="match_parent"
+                android:id="@+id/lvCuentasGaleria"
+                android:dividerHeight="5dp"/>
 
         </LinearLayout>
 
+
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
 
