@@ -62,7 +62,6 @@ public class Principal extends Activity {
         Log.i("Informacion", "valor files" +files);
         fileList.clear();
         for (File file : files) {
-            Log.e("Error", "Filas : " + file.getPath());
             String[] path = (file.getPath()).split("/");
             fileList.add(path[path.length-1]);
         }

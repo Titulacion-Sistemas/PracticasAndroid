@@ -132,7 +132,8 @@ public class MyActivity extends Activity {
 
                 ListaGaleriaCuentaAdapter lg = (ListaGaleriaCuentaAdapter) listaGaleriaCuenta.getAdapter();
                 lg.add(directorioc.getPath());
-                listaGaleriaCuenta.refreshDrawableState();
+
+                listaGaleriaCuenta.setAdapter(lg);
 
                 //ListDir(directorio);
             } catch (IOException ex) {
@@ -144,16 +145,13 @@ public class MyActivity extends Activity {
     }
 
 
-
-        @SuppressLint("SimpleDateFormat")
-
-        private String getCode() {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh-mm-ss");
-            String date = dateFormat.format(new Date());
-            String photoCode = "pic_" + date;
-            Log.i("INFORMACION", "Codigo :" + photoCode);
-            return photoCode;
-        }
+    private String getCode() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh-mm-ss");
+        String date = dateFormat.format(new Date());
+        String photoCode = "pic_" + date;
+        Log.i("INFORMACION", "Codigo :" + photoCode);
+        return photoCode;
+    }
 
 
     /////////////////////////////////

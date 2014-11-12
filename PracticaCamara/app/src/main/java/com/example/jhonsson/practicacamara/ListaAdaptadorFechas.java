@@ -26,7 +26,6 @@ public class ListaAdaptadorFechas extends ArrayAdapter<String> {
         View rowView = inflater.inflate(R.layout.filafecha, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.txtListaFechas);
         textView.setText(itemFecha.get(position));
-        Log.e("Error", "Fila Adaptador : " + position);
         return rowView;
     }
 }

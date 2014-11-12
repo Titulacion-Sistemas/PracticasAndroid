@@ -48,8 +48,7 @@ public class ListaGaleriaCuentaAdapter extends ArrayAdapter<String> {
 
     public void add(String dato){
         if (itemCuenta.indexOf(dato)==-1)
-        itemCuenta.add(dato);
+        itemCuenta.add(0,dato);
     }
-
 
 }

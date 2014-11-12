@@ -42,6 +42,12 @@
                android:layout_height="wrap_content"
                android:orientation="horizontal">
 
+               <LinearLayout
+                   android:focusable="true"
+                   android:focusableInTouchMode="true"
+                   android:layout_width="0px"
+                   android:layout_height="0px" />
+
                <TextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
@@ -76,7 +82,8 @@
                    android:text="@string/textoBoton"
                    android:textColor="@color/colorBlanco"
                    android:padding="10dp"
-                   android:clickable="true"/>
+                   android:clickable="true">
+                   </Button>
 
            </LinearLayout>
 

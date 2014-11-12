@@ -83,7 +83,7 @@ public class GalleryAdapter extends BaseAdapter
         holder.getImage().setImageBitmap(bitmap);
         //holder.getImage().setLayoutParams(new GridView.LayoutParams(250,250));
         String[] nombre = imagenes[position].getPath().split("/");
-		holder.getTextView().setText( nombre[nombre.length-1]+ "");
+		holder.getTextView().setText( nombre[nombre.length-1].replace(".jpg",""));
 		 
 		return convertView;		
 	}
