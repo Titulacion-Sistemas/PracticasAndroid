@@ -1,7 +1,9 @@
 package com.example.jhonsson.practicacamara;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -24,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 
 
@@ -35,13 +39,14 @@ public class Galeria extends Activity {
     String ruta;
     File mi_foto;
 
+    AlertDialog.Builder builder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_galeria);
 
         ruta = getIntent().getStringExtra("ruta");
-
         gridView = (GridView) findViewById(R.id.gridViewGaleria);
 
         //el número de columnas se calculará en función del tamaño de pantalla y la posición
@@ -54,7 +59,7 @@ public class Galeria extends Activity {
             if (bigScreen)  gridView.setNumColumns(3);
             else            gridView.setNumColumns(2);
 
-        gridView.setAdapter(new GalleryAdapter(this, (new File(ruta)).listFiles()));
+        gridView.setAdapter(new GalleryAdapter(this, ordenarPrFecha((new File(ruta)).listFiles())));
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
@@ -115,15 +120,34 @@ public class Galeria extends Activity {
     }
 
     private void eliminarFotos() {
-        for (File aItemaEliminar : aEliminar) {
-            aItemaEliminar.delete();
-        }
-        try {
-            gridView.setAdapter(new GalleryAdapter(this, (new File(ruta)).listFiles()));
-            updateView(0);
-        } catch (Exception ex) {
-            Log.e("ERROR ", "catch :" + ex);
-        }
+
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("Eliminar");
+        builder.setMessage("¿Esta seguro que desea elimiar?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                for (File aItemaEliminar : aEliminar) {
+                    aItemaEliminar.delete();
+                }
+                try {
+                    gridView.setAdapter(new GalleryAdapter(getApplicationContext(), ordenarPrFecha((new File(ruta)).listFiles())));
+                    updateView(0);
+                } catch (Exception ex) {
+                    Log.e("ERROR ", "catch :" + ex);
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Code that is executed when clicking NO
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -132,7 +156,7 @@ public class Galeria extends Activity {
 
             try {
                 mi_foto.createNewFile();
-                gridView.setAdapter(new GalleryAdapter(this, (new File(ruta)).listFiles()));
+                gridView.setAdapter(new GalleryAdapter(this, ordenarPrFecha((new File(ruta)).listFiles())));
                 updateView(0);
             } catch (IOException ex) {
                 Log.e("ERROR ", "catch :" + ex);
@@ -203,6 +227,19 @@ public class Galeria extends Activity {
     private void updateView(int index){
         View v = gridView.getChildAt(index -
                 gridView.getFirstVisiblePosition());
+    }
+
+    private File[] ordenarPrFecha(File[] sortedByDate) {
+        if (sortedByDate != null && sortedByDate.length > 1) {
+            Arrays.sort(sortedByDate, new Comparator<File>() {
+                @Override
+                public int compare(File object1, File object2) {
+                    return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified() : object2.lastModified());
+                }
+            });
+            return sortedByDate;
+        }
+        return sortedByDate;
     }
 
 }

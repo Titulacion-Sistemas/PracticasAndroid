@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -67,14 +69,6 @@ public class MyActivity extends Activity {
 
                     mi_foto = new File(file + "");
 
-                   /* Log.e("ERROR ", "Error:" + mi_foto);
-
-                    try {
-                        mi_foto.createNewFile();
-                    } catch (IOException ex) {
-                        Log.e("ERROR ", "catch :" + ex);
-                    }*/
-                    //
                     Uri uri = Uri.fromFile(mi_foto);
 
                     Log.e("ERROR ", "Uri:" + uri);
@@ -146,18 +140,17 @@ public class MyActivity extends Activity {
 
 
     private String getCode() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh-mm-ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
         String date = dateFormat.format(new Date());
-        String photoCode = "pic_" + date;
-        Log.i("INFORMACION", "Codigo :" + photoCode);
-        return photoCode;
+        Log.i("INFORMACION", "Codigo :" + date);
+        return date;
     }
 
 
     /////////////////////////////////
 
     void ListDir(File directorio){
-        File[] files = directorio.listFiles();
+        File[] files = ordenarPrFecha(directorio.listFiles());
         Log.i("Informacion", "valor files" +files);
         for (File file : files) {
             fileList.add(file.getPath());
@@ -169,5 +162,18 @@ public class MyActivity extends Activity {
             // setListAdapter(adapter);
             Log.e("Informacion SI", "adaptador " + adapter);
         }
+    }
+
+    private File[] ordenarPrFecha(File[] sortedByDate) {
+        if (sortedByDate != null && sortedByDate.length > 1) {
+            Arrays.sort(sortedByDate, new Comparator<File>() {
+                @Override
+                public int compare(File object1, File object2) {
+                    return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified() : object2.lastModified());
+                }
+            });
+            return sortedByDate;
+        }
+        return sortedByDate;
     }
 }

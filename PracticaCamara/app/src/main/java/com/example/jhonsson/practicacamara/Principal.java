@@ -13,7 +13,9 @@ import android.widget.TextView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -58,7 +60,7 @@ public class Principal extends Activity {
 
     /////////////////////////////////////////////////////////////////////////////
     void ListDir(File directorio){
-        File[] files = directorio.listFiles();
+        File[] files = ordenarPrFecha(directorio.listFiles());
         Log.i("Informacion", "valor files" +files);
         fileList.clear();
         for (File file : files) {
@@ -81,6 +83,18 @@ public class Principal extends Activity {
         }
     }
 
+    private File[] ordenarPrFecha(File[] sortedByDate) {
+        if (sortedByDate != null && sortedByDate.length > 1) {
+            Arrays.sort(sortedByDate, new Comparator<File>() {
+                @Override
+                public int compare(File object1, File object2) {
+                    return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified() : object2.lastModified());
+                }
+            });
+            return sortedByDate;
+        }
+        return sortedByDate;
+    }
 
 
     private String getDatePhone(){
