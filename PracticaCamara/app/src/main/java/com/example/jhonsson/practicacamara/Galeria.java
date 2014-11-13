@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,57 +119,51 @@ public class Galeria extends Activity {
     }
 
     private void eliminarFotos() {
-
-        builder = new AlertDialog.Builder(this);
-        builder.setTitle("Eliminar");
-        builder.setMessage("¿Esta seguro que desea elimiar?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                for (File aItemaEliminar : aEliminar) {
-                    aItemaEliminar.delete();
+        if(aEliminar.size()>0) {
+            builder = new AlertDialog.Builder(this);
+            builder.setTitle("Eliminar");
+            builder.setMessage("¿Esta seguro que desea elimiar?");
+            builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    for (File aItemaEliminar : aEliminar) {
+                        aItemaEliminar.delete();
+                    }
+                    try {
+                        gridView.setAdapter(new GalleryAdapter(getApplicationContext(), ordenarPrFecha((new File(ruta)).listFiles())));
+                    } catch (Exception ex) {
+                        Log.e("ERROR ", "catch :" + ex);
+                    }
+                    dialog.dismiss();
                 }
-                try {
-                    gridView.setAdapter(new GalleryAdapter(getApplicationContext(), ordenarPrFecha((new File(ruta)).listFiles())));
-                    updateView(0);
-                } catch (Exception ex) {
-                    Log.e("ERROR ", "catch :" + ex);
+            });
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Code that is executed when clicking NO
+                    dialog.dismiss();
                 }
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Code that is executed when clicking NO
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        else{
+            (Toast.makeText(getApplicationContext(),
+                    " No hay elementos seleccionados para eliminar ", Toast.LENGTH_SHORT)).show();
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0 && resultCode == RESULT_OK) {
-
             try {
                 mi_foto.createNewFile();
                 gridView.setAdapter(new GalleryAdapter(this, ordenarPrFecha((new File(ruta)).listFiles())));
-                updateView(0);
             } catch (IOException ex) {
                 Log.e("ERROR ", "catch :" + ex);
             }
-
-
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void reSeleccion() {
-        for (Integer aItemaEliminar : ItemaEliminar) {
-            gridView.getChildAt(aItemaEliminar).setBackgroundColor(Color.CYAN);
-        }
     }
 
     private void nuevaFoto() {
@@ -193,8 +186,6 @@ public class Galeria extends Activity {
 
         //Guarda imagen
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        //Intent retornar a otra actividad
-        // Intent i = new Intent(this, MyCam.class);
 
         //Retorna a la actividad
         startActivityForResult(cameraIntent, 0);
@@ -224,17 +215,13 @@ public class Galeria extends Activity {
         }
     }
 
-    private void updateView(int index){
-        View v = gridView.getChildAt(index -
-                gridView.getFirstVisiblePosition());
-    }
-
     private File[] ordenarPrFecha(File[] sortedByDate) {
         if (sortedByDate != null && sortedByDate.length > 1) {
-            Arrays.sort(sortedByDate, new Comparator<File>() {
-                @Override
-                public int compare(File object1, File object2) {
-                    return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified() : object2.lastModified());
+            Arrays.sort(sortedByDate, new Comparator()
+            {
+                public int compare(final Object o1, final Object o2) {
+                    return new Long(((File)o2).lastModified()).compareTo
+                            (new Long(((File) o1).lastModified()));
                 }
             });
             return sortedByDate;

@@ -2,7 +2,10 @@ package com.example.jhonsson.practicacamara;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +35,7 @@ public class MyActivity extends Activity {
     Button boton;
     File mi_foto;
     File directorio , directorioc;
+    ArrayList<Integer> aEliminar = new ArrayList<Integer>();
 
 
     @Override
@@ -41,6 +45,7 @@ public class MyActivity extends Activity {
 
         //Captura de datos enviados de la actividad anterior
         final String fecha = getIntent().getStringExtra("fecha");
+
         listaGaleriaCuenta = (ListView)findViewById(R.id.lvCuentasGaleria);
 
         boton = (Button) findViewById(R.id.btnSiguiente);
@@ -50,8 +55,6 @@ public class MyActivity extends Activity {
                 .getAbsolutePath());
 
         ListDir(directorio);
-
-
 
         //accion para el boton
         boton.setOnClickListener(new View.OnClickListener() {
@@ -76,10 +79,10 @@ public class MyActivity extends Activity {
                     //Abre la camara para tomar la foto
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+                    //txtNumCuenta.setText("");
+
                     //Guarda imagen
                     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    //Intent retornar a otra actividad
-                    // Intent i = new Intent(this, MyCam.class);
 
                     //Retorna a la actividad
                     startActivityForResult(cameraIntent, 0);
@@ -92,7 +95,6 @@ public class MyActivity extends Activity {
                     mensaje.show();
                 }
             }
-            //Hasta aqui
         });
 
         listaGaleriaCuenta.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -109,8 +111,74 @@ public class MyActivity extends Activity {
             }
         });
 
+        listaGaleriaCuenta.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Button btnBorrar = (Button) findViewById(R.id.btnBorrar);
+                if (aEliminar.indexOf(position)==-1) {
+                    aEliminar.add(position);
+                    listaGaleriaCuenta.getChildAt(position).setBackgroundColor(Color.LTGRAY);
+                    btnBorrar.setVisibility(View.VISIBLE);
+                }else{
+                    aEliminar.remove((Object)position);
+                    listaGaleriaCuenta.getChildAt(position).setBackgroundColor(Color.TRANSPARENT);
+                    if (aEliminar.size()==0){
+                        btnBorrar.setVisibility(View.INVISIBLE);
+                    }
+                }
+                return true;
+            }
+        });
 
+        ((Button) findViewById(R.id.btnBorrar)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eliminarDir();
+            }
+        });
 
+    }
+
+    private void eliminarDir() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Eliminar");
+        builder.setMessage("¿Esta seguro que desea elimiar el directorio y todo su contenido?");
+        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    ListaGaleriaCuentaAdapter lg = (ListaGaleriaCuentaAdapter) listaGaleriaCuenta.getAdapter();
+                    for (Integer aItemaEliminar : aEliminar) {
+                        File f = new File(
+                            directorio.getPath()+
+                            "/"+
+                            ((TextView)(listaGaleriaCuenta.getChildAt(aItemaEliminar)).findViewById(R.id.txtCuentaLista)).getText().toString()
+                        );
+
+                        for(File foto:f.listFiles())
+                            Log.i("Borro el Archivo: "+foto.getPath()+"?",foto.delete()+"");
+
+                        Log.i("Borro el Directorio: "+f.getPath()+"?",f.delete()+"");
+                        lg.remove(f.getPath());
+                    }
+
+                    listaGaleriaCuenta.setAdapter(lg);
+                    //((ListaGaleriaCuentaAdapter)listaGaleriaCuenta.getAdapter()).notifyDataSetChanged();
+                } catch (Exception ex) {
+                    Log.e("ERROR ", "catch :" + ex);
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Code that is executed when clicking NO
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     //Esto tambien agregue
@@ -129,12 +197,9 @@ public class MyActivity extends Activity {
 
                 listaGaleriaCuenta.setAdapter(lg);
 
-                //ListDir(directorio);
             } catch (IOException ex) {
                 Log.e("ERROR ", "catch :" + ex);
             }
-
-
         }
     }
 
@@ -146,7 +211,6 @@ public class MyActivity extends Activity {
         return date;
     }
 
-
     /////////////////////////////////
 
     void ListDir(File directorio){
@@ -156,20 +220,17 @@ public class MyActivity extends Activity {
             fileList.add(file.getPath());
         }
         if(fileList != null) {
-            ListaGaleriaCuentaAdapter adapter = new ListaGaleriaCuentaAdapter(this, fileList);
-            listaGaleriaCuenta.setAdapter(adapter);
-            //lfecha.add(String.valueOf(lista));
-            // setListAdapter(adapter);
-            Log.e("Informacion SI", "adaptador " + adapter);
+            listaGaleriaCuenta.setAdapter(new ListaGaleriaCuentaAdapter(this, fileList));
         }
     }
 
     private File[] ordenarPrFecha(File[] sortedByDate) {
         if (sortedByDate != null && sortedByDate.length > 1) {
-            Arrays.sort(sortedByDate, new Comparator<File>() {
-                @Override
-                public int compare(File object1, File object2) {
-                    return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified() : object2.lastModified());
+            Arrays.sort(sortedByDate, new Comparator()
+            {
+                public int compare(final Object o1, final Object o2) {
+                    return new Long(((File)o2).lastModified()).compareTo
+                            (new Long(((File) o1).lastModified()));
                 }
             });
             return sortedByDate;

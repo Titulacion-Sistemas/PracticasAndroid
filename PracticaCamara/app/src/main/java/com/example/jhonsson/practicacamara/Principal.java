@@ -31,7 +31,7 @@ public class Principal extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
 
-       File hoy = new File(Environment
+        File hoy = new File(Environment
                 .getExternalStoragePublicDirectory((Environment.DIRECTORY_DCIM)+ "/CONIEL/"+getDatePhone()+"/")
                 .getAbsolutePath());
         hoy.mkdirs();
@@ -49,7 +49,6 @@ public class Principal extends Activity {
                 Intent i = new Intent(Principal.this , MyActivity.class);
                 i.putExtra("fecha", textView.getText());
                 startActivity(i);
-
             }
         });
         //Log.e("Ficheros", "Error al escribir fichero a tarjeta SD" + ex);
@@ -85,10 +84,21 @@ public class Principal extends Activity {
 
     private File[] ordenarPrFecha(File[] sortedByDate) {
         if (sortedByDate != null && sortedByDate.length > 1) {
-            Arrays.sort(sortedByDate, new Comparator<File>() {
-                @Override
-                public int compare(File object1, File object2) {
-                    return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified() : object2.lastModified());
+            Arrays.sort(sortedByDate, new Comparator<File>()
+            {
+                public int compare(final File o1, final File o2) {
+                    String path[] = o1.getPath().split("/");
+                    path = path[path.length-1].split("-");
+                    int f1 =0;
+                    for(String p:path)
+                        f1=f1+Integer.parseInt(p);
+
+                    path = o2.getPath().split("/");
+                    path = path[path.length-1].split("-");
+                    int f2 =0;
+                    for(String p:path)
+                        f2=f2+Integer.parseInt(p);
+                    return f2>f1?+1:-1;
                 }
             });
             return sortedByDate;

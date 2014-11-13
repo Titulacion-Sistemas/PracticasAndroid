@@ -74,16 +74,35 @@
                android:layout_gravity="bottom"
                android:gravity="right">
 
-               <Button
+               <LinearLayout
                    android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:id="@+id/btnSiguiente"
-                   style="@style/ButtonStilo"
-                   android:text="@string/textoBoton"
-                   android:textColor="@color/colorBlanco"
-                   android:padding="10dp"
-                   android:clickable="true">
+                   android:layout_height="wrap_content">
+
+                   <Button
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/btnBorrar"
+                       style="@style/ButtonStilo"
+                       android:text="@string/textoBoton2"
+                       android:textColor="@color/colorBlanco"
+                       android:padding="10dp"
+                       android:clickable="true"
+                       android:visibility="invisible"
+                       android:layout_marginRight="10dp">
                    </Button>
+
+                   <Button
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/btnSiguiente"
+                       style="@style/ButtonStilo"
+                       android:text="@string/textoBoton"
+                       android:textColor="@color/colorBlanco"
+                       android:padding="10dp"
+                       android:clickable="true">
+                   </Button>
+
+                   </LinearLayout>
 
            </LinearLayout>
 

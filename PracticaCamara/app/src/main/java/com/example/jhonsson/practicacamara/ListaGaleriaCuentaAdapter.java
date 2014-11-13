@@ -30,25 +30,17 @@ public class ListaGaleriaCuentaAdapter extends ArrayAdapter<String> {
         TextView textView = (TextView) rowView.findViewById(R.id.txtCuentaLista);
         textView.setText(datos[datos.length-1]);
 
-        File mifile = new File(itemCuenta.get(position));
-        File[] files = mifile.listFiles();
-
-        /*if(files!=null) {
-            //Gallery galeria = (Gallery) rowView.findViewById(R.id.galleryDiaria);
-            //ImageAdapter img = new ImageAdapter(context);
-
-            for (File f : files) {
-                Bitmap bMap = BitmapFactory.decodeFile(String.valueOf(f));
-                img.AddImage(bMap);
-            }
-            galeria.setAdapter(img);
-        }*/
         return rowView;
     }
 
     public void add(String dato){
         if (itemCuenta.indexOf(dato)==-1)
         itemCuenta.add(0,dato);
+    }
+
+    public void remove(String dato){
+        if (itemCuenta.indexOf(dato)!=-1)
+            itemCuenta.remove(dato);
     }
 
 }
