@@ -3,9 +3,13 @@ package com.example.jhonsson.practicacamara;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +30,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import classes.MyLocation;
+import classes.SessionManager;
 
 
 public class MyActivity extends Activity {
@@ -164,6 +171,7 @@ public class MyActivity extends Activity {
 
                     listaGaleriaCuenta.setAdapter(lg);
                     //((ListaGaleriaCuentaAdapter)listaGaleriaCuenta.getAdapter()).notifyDataSetChanged();
+                    aEliminar=new ArrayList<Integer>();
                 } catch (Exception ex) {
                     Log.e("ERROR ", "catch :" + ex);
                 }
@@ -174,6 +182,9 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Code that is executed when clicking NO
+                ListaGaleriaCuentaAdapter lg = (ListaGaleriaCuentaAdapter) listaGaleriaCuenta.getAdapter();
+                listaGaleriaCuenta.setAdapter(lg);
+                aEliminar=new ArrayList<Integer>();
                 dialog.dismiss();
             }
         });
@@ -191,6 +202,36 @@ public class MyActivity extends Activity {
 
             try {
                 mi_foto.createNewFile();
+
+                try {
+
+                    MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
+                        @Override
+                        public void gotLocation(Location location){
+                            //Got the location!
+                            LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+                            Location L= locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                            Log.i("Ultima localización conocida:","Latitud: "+L.getLatitude());
+                            Log.i("Ultima localización conocida:","Longitud: "+L.getLongitude());
+                            SessionManager.getManager(directorioc)
+                                    .saveKey("Latitud",L.getLatitude()+"")
+                                    .saveKey("Longitud", L.getLongitude()+"");
+
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    "La ubicación de la foto ha sido almacenada",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                        }
+                    };
+                    MyLocation myLocation = new MyLocation();
+                    myLocation.getLocation(this, locationResult);
+
+                }catch (Exception ignored){
+                    ignored.printStackTrace();
+                }
 
                 ListaGaleriaCuentaAdapter lg = (ListaGaleriaCuentaAdapter) listaGaleriaCuenta.getAdapter();
                 lg.add(directorioc.getPath());

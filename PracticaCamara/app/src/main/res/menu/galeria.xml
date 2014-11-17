@@ -10,6 +10,12 @@
         android:title="@string/textibtnagregar"/>
 
     <item
+        android:id="@+id/menu_geo"
+        android:showAsAction="ifRoom|withText"
+        android:icon="@drawable/ic_action_location"
+        android:title="@string/textactualizargeo"/>
+
+    <item
         android:id="@+id/menu_new"
         android:showAsAction="ifRoom|withText"
         android:icon="@drawable/ic_action_discard"

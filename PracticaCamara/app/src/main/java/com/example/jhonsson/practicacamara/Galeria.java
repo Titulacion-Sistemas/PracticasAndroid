@@ -7,9 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+
+import classes.MyLocation;
+import classes.SessionManager;
 
 
 public class Galeria extends Activity {
@@ -88,8 +93,12 @@ public class Galeria extends Activity {
                 return true;
             }
         });
+
         String[] r = ruta.split("/");
         setTitle(r[r.length-1]);
+
+        cambiarLatLong();
+
         try {
             getActionBar().setHomeButtonEnabled(true);
         }catch (Exception ignored){}
@@ -110,12 +119,63 @@ public class Galeria extends Activity {
             case R.id.menu_save:
                 nuevaFoto();
                 return true;
+            case R.id.menu_geo:
+                cambiarLocalizacion();
+                return true;
             case R.id.menu_new:
                 eliminarFotos();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void cambiarLocalizacion() {
+        /*localizacion de la foto
+
+
+        Criteria criterio = new Criteria();
+        criterio.setCostAllowed(false);
+        criterio.setAltitudeRequired(false);
+        criterio.setAccuracy(Criteria.ACCURACY_FINE);
+        String proveedor = locationManager.getBestProvider(criterio,true);*/
+
+        try {
+
+            MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
+                @Override
+                public void gotLocation(Location location){
+                    //Got the location!
+                    LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+                    Location L= locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                    Log.i("Ultima localización conocida:","Latitud: "+L.getLatitude());
+                    Log.i("Ultima localización conocida:","Longitud: "+L.getLongitude());
+                    SessionManager.getManager(new File(ruta))
+                            .saveKey("Latitud",L.getLatitude()+"")
+                            .saveKey("Longitud", L.getLongitude()+"");
+
+                    cambiarLatLong();
+                    Toast.makeText(getApplicationContext(),"La ubicación de la foto ha sido cambiada",Toast.LENGTH_SHORT).show();
+
+                }
+            };
+            MyLocation myLocation = new MyLocation();
+            myLocation.getLocation(this, locationResult);
+
+        }catch (Exception ignored){
+            ignored.printStackTrace();
+        }
+
+    }
+
+    private void cambiarLatLong() {
+        ((TextView) findViewById(R.id.lat)).setText(
+                "Latitud : "+SessionManager.getManager(new File(ruta)).getStringKey("Latitud")
+        );
+        ((TextView) findViewById(R.id.longit)).setText(
+                "Longitud : " + SessionManager.getManager(new File(ruta)).getStringKey("Longitud")
+        );
     }
 
     private void eliminarFotos() {

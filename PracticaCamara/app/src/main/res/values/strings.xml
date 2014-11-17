@@ -17,6 +17,7 @@
     <string name="title_activity_galeria">Galeria</string>
     <string name="textibtnagregar">Agregar</string>
     <string name="textobtnEliminar">Eliminar</string>
+    <string name="textactualizargeo">Cambiar Ubicación</string>
 
 
 </resources>

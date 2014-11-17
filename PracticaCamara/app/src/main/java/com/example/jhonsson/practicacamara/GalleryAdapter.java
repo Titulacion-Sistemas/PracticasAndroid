@@ -3,6 +3,7 @@ package com.example.jhonsson.practicacamara;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class GalleryAdapter extends BaseAdapter
 {
 	Context context;
-    protected File [] imagenes;
+    protected ArrayList<File> imagenes;
     Bitmap bitmap;
 
 	//guardamos las imágenes reescaladas para mejorar el rendimiento ya que estas operaciones son costosas
@@ -26,14 +28,20 @@ public class GalleryAdapter extends BaseAdapter
 	public GalleryAdapter(Context context, File [] imagenes)
 	{
 		super();
-		this.imagenes = imagenes;
+        this.imagenes = new ArrayList<File>();
+        for(File i : imagenes){
+            String path = (i.getPath());
+            path = path.substring(path.length()-3,path.length());
+            Log.i("Extencion de Archivo", path);
+            if(path.equals("jpg")) this.imagenes.add(i);
+        }
 		this.context = context;
 	}
 
 	@Override
 	public int getCount()
 	{
-		return imagenes.length;
+		return imagenes.size();
 	}
 
 	@Override
@@ -74,7 +82,7 @@ public class GalleryAdapter extends BaseAdapter
 
              //Bitmap bMap = BitmapFactory.decodeFile(String.valueOf(imagenes[position]));
              ////estas son
-          bitmap = BitmapUtils.decodeSampledBitmapFromResource(imagenes[position],250, 0);
+          bitmap = BitmapUtils.decodeSampledBitmapFromResource(imagenes.get(position),250, 0);
 			//imagenesEscaladas.put(position, bitmap);
               //bMap = BitmapFactory.decodeFile(imagenes[position].getPath());
 		 }
@@ -82,7 +90,7 @@ public class GalleryAdapter extends BaseAdapter
 		//holder.getImage().setImageBitmap(imagenesEscaladas.get(position));
         holder.getImage().setImageBitmap(bitmap);
         //holder.getImage().setLayoutParams(new GridView.LayoutParams(250,250));
-        String[] nombre = imagenes[position].getPath().split("/");
+        String[] nombre = imagenes.get(position).getPath().split("/");
 		holder.getTextView().setText( nombre[nombre.length-1].replace(".jpg",""));
 		 
 		return convertView;		
