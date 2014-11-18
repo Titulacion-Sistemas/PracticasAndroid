@@ -122,17 +122,28 @@ public class MyActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Button btnBorrar = (Button) findViewById(R.id.btnBorrar);
-                if (aEliminar.indexOf(position)==-1) {
-                    aEliminar.add(position);
-                    listaGaleriaCuenta.getChildAt(position).setBackgroundColor(Color.LTGRAY);
-                    btnBorrar.setVisibility(View.VISIBLE);
-                }else{
-                    aEliminar.remove((Object)position);
-                    listaGaleriaCuenta.getChildAt(position).setBackgroundColor(Color.TRANSPARENT);
-                    if (aEliminar.size()==0){
-                        btnBorrar.setVisibility(View.INVISIBLE);
+                try {
+                    Log.i("Child...",""+listaGaleriaCuenta.getChildAt(position)+"");
+                    if (aEliminar.indexOf((Object)position)==-1) {
+                        aEliminar.add(position);
+                        listaGaleriaCuenta.getChildAt(position).setBackgroundColor(Color.LTGRAY);
+                        btnBorrar.setVisibility(View.VISIBLE);
+                    }else{
+                        aEliminar.remove((Object)position);
+                        listaGaleriaCuenta.getChildAt(position).setBackgroundColor(Color.TRANSPARENT);
+                        if (aEliminar.size()==0){
+                            btnBorrar.setVisibility(View.INVISIBLE);
+                        }
                     }
+                }catch (Exception e){
+                    Log.e("Error al Seleccionar",""+e.toString());
+                    aEliminar=new ArrayList<Integer>();
+                    ListaGaleriaCuentaAdapter lg = (ListaGaleriaCuentaAdapter) listaGaleriaCuenta.getAdapter();
+                    listaGaleriaCuenta.setAdapter(lg);
+                    btnBorrar.setVisibility(View.INVISIBLE);
+                    getToast("Error al Seleccionar...");
                 }
+
                 return true;
             }
         });
@@ -209,25 +220,28 @@ public class MyActivity extends Activity {
                         @Override
                         public void gotLocation(Location location){
                             //Got the location!
-                            LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-                            Location L= locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if(location!=null) {
 
-                            Log.i("Ultima localización conocida:","Latitud: "+L.getLatitude());
-                            Log.i("Ultima localización conocida:","Longitud: "+L.getLongitude());
-                            SessionManager.getManager(directorioc)
-                                    .saveKey("Latitud",L.getLatitude()+"")
-                                    .saveKey("Longitud", L.getLongitude()+"");
+                                Log.i("Ultima localización conocida:", "Latitud: " + location.getLatitude());
+                                Log.i("Ultima localización conocida:", "Longitud: " + location.getLongitude());
+                                SessionManager.getManager(directorioc)
+                                        .saveKey("Latitud", location.getLatitude() + "")
+                                        .saveKey("Longitud", location.getLongitude() + "");
 
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    "La ubicación de la foto ha sido almacenada",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                                getToast("La ubicación de la foto ha sido almacenada");
+
+                            }else{
+                                getToast("Error, Ubicación NO detectada");
+                                SessionManager.getManager(directorioc)
+                                        .saveKey("Latitud", "Por favor, actualice")
+                                        .saveKey("Longitud", "datos de ubicación...");
+                            }
 
                         }
                     };
                     MyLocation myLocation = new MyLocation();
                     myLocation.getLocation(this, locationResult);
+                    getToast("Esperando ubicación...");
 
                 }catch (Exception ignored){
                     ignored.printStackTrace();
@@ -242,6 +256,14 @@ public class MyActivity extends Activity {
                 Log.e("ERROR ", "catch :" + ex);
             }
         }
+    }
+
+    private void getToast(String s){
+        Toast.makeText(
+                getApplicationContext(),
+                s,
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
 

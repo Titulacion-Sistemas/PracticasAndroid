@@ -34,9 +34,7 @@ public class SessionManager {
     }
 
     public static SessionManager getManager( File f) {
-        if (INSTANCE == null) {
-            INSTANCE = new SessionManager(f);
-        }
+        INSTANCE = new SessionManager(f);
         return INSTANCE;
     }
 

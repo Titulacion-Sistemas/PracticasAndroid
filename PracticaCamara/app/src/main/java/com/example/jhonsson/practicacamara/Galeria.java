@@ -3,14 +3,17 @@ package com.example.jhonsson.practicacamara;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -30,12 +33,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Timer;
 
 import classes.MyLocation;
 import classes.SessionManager;
 
 
-public class Galeria extends Activity {
+public class Galeria extends Activity{
 
     GridView gridView;
     ArrayList<File> aEliminar = new ArrayList<File>();
@@ -44,6 +48,9 @@ public class Galeria extends Activity {
     File mi_foto;
 
     AlertDialog.Builder builder;
+    private boolean gps_enabled=false;
+    private boolean network_enabled=false;
+    private DetenerBusqueda astd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +127,8 @@ public class Galeria extends Activity {
                 nuevaFoto();
                 return true;
             case R.id.menu_geo:
-                cambiarLocalizacion();
+                if(getLocation()) getToast("Esperando Ubicacion...");
+                else getToast("Imposible iniciar búsqueda, habilite dispositivos de ubicación......");
                 return true;
             case R.id.menu_new:
                 eliminarFotos();
@@ -130,44 +138,61 @@ public class Galeria extends Activity {
         }
     }
 
-    private void cambiarLocalizacion() {
-        /*localizacion de la foto
-
-
-        Criteria criterio = new Criteria();
-        criterio.setCostAllowed(false);
-        criterio.setAltitudeRequired(false);
-        criterio.setAccuracy(Criteria.ACCURACY_FINE);
-        String proveedor = locationManager.getBestProvider(criterio,true);*/
-
-        try {
-
-            MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
-                @Override
-                public void gotLocation(Location location){
-                    //Got the location!
-                    LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-                    Location L= locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                    Log.i("Ultima localización conocida:","Latitud: "+L.getLatitude());
-                    Log.i("Ultima localización conocida:","Longitud: "+L.getLongitude());
-                    SessionManager.getManager(new File(ruta))
-                            .saveKey("Latitud",L.getLatitude()+"")
-                            .saveKey("Longitud", L.getLongitude()+"");
-
-                    cambiarLatLong();
-                    Toast.makeText(getApplicationContext(),"La ubicación de la foto ha sido cambiada",Toast.LENGTH_SHORT).show();
-
-                }
-            };
-            MyLocation myLocation = new MyLocation();
-            myLocation.getLocation(this, locationResult);
-
-        }catch (Exception ignored){
-            ignored.printStackTrace();
-        }
-
+    private void getToast(String s){
+        Toast.makeText(
+                getApplicationContext(),
+                s,
+                Toast.LENGTH_SHORT
+        ).show();
     }
+
+    LocationManager lm;
+    public boolean getLocation()
+    {
+        lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        try{gps_enabled=lm.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
+        try{network_enabled=lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ex){}
+
+        if(!gps_enabled && !network_enabled)
+            return false;
+
+        if(gps_enabled)
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+        if(network_enabled)
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
+
+        astd = new DetenerBusqueda();
+        astd.execute(30000);
+
+        return true;
+    }
+
+
+    LocationListener locationListenerGps = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            astd.cancel(true);
+            actualizarLoc(location);
+            lm.removeUpdates(this);
+            lm.removeUpdates(locationListenerNetwork);
+        }
+        public void onProviderDisabled(String provider) {}
+        public void onProviderEnabled(String provider) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+    };
+
+    LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            astd.cancel(true);
+            actualizarLoc(location);
+            lm.removeUpdates(this);
+            lm.removeUpdates(locationListenerGps);
+        }
+        public void onProviderDisabled(String provider) {}
+        public void onProviderEnabled(String provider) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+    };
+
 
     private void cambiarLatLong() {
         ((TextView) findViewById(R.id.lat)).setText(
@@ -289,4 +314,62 @@ public class Galeria extends Activity {
         return sortedByDate;
     }
 
+    private void actualizarLoc(Location location){
+        if(location!=null){
+            Log.i("Localización Obtenida:","Latitud: "+ location.getLatitude());
+            Log.i("Localización Obtenida:","Longitud: "+ location.getLongitude());
+            SessionManager.getManager(new File(ruta))
+                    .saveKey("Latitud", location.getLatitude()+"")
+                    .saveKey("Longitud", location.getLongitude()+"");
+
+            cambiarLatLong();
+            getToast("Exito...");
+
+        }else{
+            getToast("NO se pudo localizar el dispositivo intentelo nuevamente");
+        }
+    }
+
+
+    private class DetenerBusqueda extends AsyncTask<Integer, Object, Object>{
+
+        @Override
+        protected Object doInBackground(Integer... params) {
+            try {
+                Thread.sleep(params[0]);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            lm.removeUpdates(locationListenerGps);
+            lm.removeUpdates(locationListenerNetwork);
+
+            Location net_loc=null, gps_loc=null;
+            if(gps_enabled)
+                gps_loc=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(network_enabled)
+                net_loc=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            //if there are both values use the latest one
+            if(gps_loc!=null && net_loc!=null){
+                if(gps_loc.getTime()>net_loc.getTime())
+                    actualizarLoc(gps_loc);
+                else
+                    actualizarLoc(net_loc);
+                return null;
+            }
+
+            if(gps_loc!=null){
+                actualizarLoc(gps_loc);
+                return null;
+            }
+            if(net_loc!=null){
+                actualizarLoc(net_loc);
+                return null;
+            }
+            actualizarLoc(null);
+
+            return null;
+        }
+    }
 }
