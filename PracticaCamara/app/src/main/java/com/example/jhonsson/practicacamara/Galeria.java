@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,10 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Timer;
 
-import classes.MyLocation;
-import classes.SessionManager;
+import clases.GuardarFotos;
 
 
 public class Galeria extends Activity{
@@ -168,7 +165,6 @@ public class Galeria extends Activity{
         return true;
     }
 
-
     LocationListener locationListenerGps = new LocationListener() {
         public void onLocationChanged(Location location) {
             astd.cancel(true);
@@ -196,10 +192,10 @@ public class Galeria extends Activity{
 
     private void cambiarLatLong() {
         ((TextView) findViewById(R.id.lat)).setText(
-                "Latitud : "+SessionManager.getManager(new File(ruta)).getStringKey("Latitud")
+                "Latitud : "+ GuardarFotos.getManager(new File(ruta)).getStringKey("Latitud")
         );
         ((TextView) findViewById(R.id.longit)).setText(
-                "Longitud : " + SessionManager.getManager(new File(ruta)).getStringKey("Longitud")
+                "Longitud : " + GuardarFotos.getManager(new File(ruta)).getStringKey("Longitud")
         );
     }
 
@@ -318,7 +314,7 @@ public class Galeria extends Activity{
         if(location!=null){
             Log.i("Localización Obtenida:","Latitud: "+ location.getLatitude());
             Log.i("Localización Obtenida:","Longitud: "+ location.getLongitude());
-            SessionManager.getManager(new File(ruta))
+            GuardarFotos.getManager(new File(ruta))
                     .saveKey("Latitud", location.getLatitude()+"")
                     .saveKey("Longitud", location.getLongitude()+"");
 

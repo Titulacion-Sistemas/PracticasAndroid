@@ -12,13 +12,13 @@
         android:icon="@drawable/ic_app"
         android:theme="@android:style/Theme.Holo.Light" >
         <activity
-            android:name=".MyActivity"
+            android:name=".CapturarFotos"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
 
 
         <activity
-            android:name=".Principal"
+            android:name=".Fotos"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar"
             android:label="@string/title_activity_principal" >
             <intent-filter>
