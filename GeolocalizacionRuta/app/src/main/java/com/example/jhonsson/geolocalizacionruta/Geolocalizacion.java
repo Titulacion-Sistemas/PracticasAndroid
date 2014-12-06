@@ -39,7 +39,7 @@ public class Geolocalizacion extends Fragment {
     View rootView;
     ArrayList<LatLng> markerPoints;
     GoogleMap map;
-    TextView txtDistanciaDuracion;
+    TextView txtDistancia, txtDuracion;
     Button btnDraw;
 
     @Override
@@ -48,7 +48,8 @@ public class Geolocalizacion extends Fragment {
 
         rootView = inflater.inflate(R.layout.activity_geolocalizacion, container, false);
         btnDraw = (Button) rootView.findViewById(R.id.btn_draw);
-        txtDistanciaDuracion = (TextView) rootView.findViewById(R.id.txt_distancia_tiempo);
+        txtDistancia = (TextView) rootView.findViewById(R.id.txt_distancia);
+        txtDuracion = (TextView) rootView.findViewById(R.id.txt_tiempo);
 
         // Initializing
         markerPoints = new ArrayList<LatLng>();
@@ -112,6 +113,8 @@ public class Geolocalizacion extends Fragment {
 
                     // Removes all the points in the ArrayList
                     markerPoints.clear();
+                    txtDuracion.setText("");
+                    txtDistancia.setText("");
 
                 }
             });
@@ -132,17 +135,8 @@ public class Geolocalizacion extends Fragment {
                         // Start downloading json data from Google Directions API
                         downloadTask.execute(url);
                     }
-
                 }
             });
-
-      /*      map.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher))
-                    .title("Machala")
-                    .snippet("Aqui estan trabajando")
-                    .position(machala)
-                    .anchor(0.0f, 1.0f)
-                    .flat(true));*/
 
             CameraPosition cameraPosition = CameraPosition.builder()
                     .target(machala)
@@ -150,11 +144,9 @@ public class Geolocalizacion extends Fragment {
                     .bearing(90)
                     .build();
 
-
             // Animate the change in camera view over 2 seconds
             map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),
                     2000, null);
-
         }
         return rootView;
     }
@@ -293,9 +285,10 @@ public class Geolocalizacion extends Fragment {
             MarkerOptions markerOptions = new MarkerOptions();
             String distancia = "";
             String duracion = "";
+            Log.d("Valor return", String.valueOf(result.size()));
 
             if(result.size()<1){
-                Toast.makeText(getActivity(), "No se han seleccionados puntos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "No se han seleccionados puntos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -331,7 +324,8 @@ public class Geolocalizacion extends Fragment {
                 lineOptions.width(2);
                 lineOptions.color(Color.RED);
             }
-            txtDistanciaDuracion.setText("Distancia: " +distancia + " , Duracion: " +duracion);
+            txtDistancia.setText("Distancia: " +distancia);
+            txtDuracion.setText("Duración: " +duracion);
 
             // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);

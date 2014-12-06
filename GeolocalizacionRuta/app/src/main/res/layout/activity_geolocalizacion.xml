@@ -1,29 +1,109 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Geolocalizacion">
 
-    <TextView
-        android:id="@+id/txt_distancia_tiempo"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_alignParentTop="true">
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerInParent="true">
+
+                    <Spinner
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinicio"
+                        android:dropDownSelector="@color/wallet_bright_foreground_holo_dark"
+                        android:spinnerMode="dropdown"/>
+
+                    <Spinner
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spfin"
+                        android:dropDownSelector="@color/wallet_bright_foreground_holo_dark"
+                        android:spinnerMode="dropdown"/>
+
+                    <Button
+                        android:id="@+id/btn_draw"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.1"
+                        android:layout_height="wrap_content"
+                        android:text="Ruta"
+                        android:padding="10dp"
+                        android:layout_gravity="right"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
         android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2">
+
+        <fragment android:id="@+id/map"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="30dp"
-        android:text="hola soy andrea"/>
+        class="com.google.android.gms.maps.MapFragment"/>
 
-    <Button android:id="@+id/btn_draw" android:layout_width="fill_parent"
-        android:layout_height="wrap_content" android:text="Ruta"
-        android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
-    <fragment android:id="@+id/map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        class="com.google.android.gms.maps.MapFragment"
-        android:layout_above="@id/btn_draw"
-        android:layout_alignBaseline="@+id/txt_distancia_tiempo"/>
+    <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="@color/common_signin_btn_dark_text_disabled">
 
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true">
 
+           <LinearLayout
+               android:layout_width="300dp"
+               android:layout_height="wrap_content"
+               android:layout_centerInParent="true">
 
-</RelativeLayout>
+                <TextView
+                    android:id="@+id/txt_distancia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:padding="10dp"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_alignParentLeft="true"/>
+
+                <TextView
+                   android:id="@+id/txt_tiempo"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text=""
+                   android:padding="10dp"
+                   android:textSize="15dp"
+                   android:textStyle="bold"
+                   android:layout_alignParentRight="true"/>
+
+            </LinearLayout>
+       </RelativeLayout>
+
+        </LinearLayout>
+
+</LinearLayout>
