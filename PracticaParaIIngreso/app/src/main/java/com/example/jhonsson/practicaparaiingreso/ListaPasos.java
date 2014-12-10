@@ -38,10 +38,10 @@ public class ListaPasos extends Fragment {
         adapter = new ListaPasosAdapter(getActivity(), listaPasos);
         listView.setAdapter(adapter);
         //setListAdapter(adapter);
-        listaPasos.add(new Pasos(R.drawable.ic_action_person, "Datos de Abonado", "Digitar o Consultar datos requeridos"));
-        listaPasos.add(new Pasos(R.drawable.ic_action_settings, "Detalle de Instalación", "Seleccionar o Digitar el detalle de la instalación"));
-        listaPasos.add(new Pasos(R.drawable.ic_action_settings, "Digitar Medidore", "Seleccionar o Digitar un medidor"));
-        listaPasos.add(new Pasos(R.drawable.ic_action_settings, "Material utilizado", "Digitar el material utilizado"));
+        listaPasos.add(new Pasos(getResources().getDrawable(R.drawable.ic_action_person), "Datos de Abonado", "Digitar o Consultar datos requeridos"));
+        listaPasos.add(new Pasos(getResources().getDrawable(R.drawable.ic_action_settings), "Detalle de Instalación", "Seleccionar o Digitar el detalle de la instalación"));
+        listaPasos.add(new Pasos(getResources().getDrawable(R.drawable.ic_action_settings), "Digitar Medidores", "Seleccionar o Digitar un medidor"));
+        listaPasos.add(new Pasos(getResources().getDrawable(R.drawable.ic_action_settings), "Material utilizado", "Digitar el material utilizado"));
 
         return v;
     }

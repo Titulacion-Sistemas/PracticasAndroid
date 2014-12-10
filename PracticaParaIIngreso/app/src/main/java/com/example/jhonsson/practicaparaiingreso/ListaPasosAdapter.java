@@ -34,10 +34,11 @@ public class ListaPasosAdapter extends ArrayAdapter<Pasos> {
 
         // Definimos los elementos que tiene nuestro layout
         ImageView img = (ImageView)item.findViewById(R.id.imagen);
-        TextView nombre = (TextView) item.findViewById(R.id.texto);
+        TextView nombre = (TextView) item.findViewById(R.id.nombre);
         TextView descripcion = (TextView) item.findViewById(R.id.descripcion);
 
-        img.setImageDrawable(context.getResources().getDrawable(p.getImagen()));
+        img.setImageDrawable((p.getImagen()));
+        //img.setImageResource(p.getImagen());
         nombre.setText(p.getNombre());
         descripcion.setText(p.getDescripcion());
 

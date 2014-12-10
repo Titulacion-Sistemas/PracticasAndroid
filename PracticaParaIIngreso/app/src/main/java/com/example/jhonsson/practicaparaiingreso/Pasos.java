@@ -1,24 +1,26 @@
 package com.example.jhonsson.practicaparaiingreso;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Andreita on 09/12/2014.
  */
 public class Pasos {
-    int imagen;
+    Drawable imagen;
     String nombre, descripcion;
 
-    public Pasos(int imagen, String nombre, String descripcion) {
+    public Pasos(Drawable imagen, String nombre, String descripcion) {
         super();
         this.imagen = imagen;
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
 
-    public int getImagen() {
+    public Drawable getImagen() {
         return imagen;
     }
 
-    public void setImagen(int imagen) {
+    public void setImagen(Drawable imagen) {
         this.imagen = imagen;
     }
 
