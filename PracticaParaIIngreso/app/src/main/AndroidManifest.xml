@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.jhonsson.practicaparaiingreso" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".Ingreso"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ListaPasos"
+            android:label="@string/title_activity_lista_pasos" >
+        </activity>
+        <activity
+            android:name=".PasoDatosAbonado"
+            android:label="@string/title_activity_paso_datos_abonado" >
+        </activity>
+        <activity
+            android:name=".PasoDetalleInstalacion"
+            android:label="@string/title_activity_paso_detalle_instalacion" >
+        </activity>
+    </application>
+
+</manifest>

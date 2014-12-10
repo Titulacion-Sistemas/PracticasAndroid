@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PracticaParaIIngreso</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_lista_pasos">listaPasos</string>
+    <string name="title_activity_paso_datos_abonado">PasoDatosAbonado</string>
+    <string name="title_activity_paso_detalle_instalacion">PasoDetalleInstalacion</string>
+
+</resources>
