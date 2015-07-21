@@ -34,6 +34,7 @@ public class Fotos extends Activity {
         File hoy = new File(Environment
                 .getExternalStoragePublicDirectory((Environment.DIRECTORY_DCIM)+ "/CONIEL/"+getDatePhone()+"/")
                 .getAbsolutePath());
+
         hoy.mkdirs();
 
         File directorio = new File(Environment

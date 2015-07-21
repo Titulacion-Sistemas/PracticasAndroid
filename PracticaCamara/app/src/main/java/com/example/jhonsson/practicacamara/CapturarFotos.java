@@ -1,5 +1,6 @@
 package com.example.jhonsson.practicacamara;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -33,7 +34,7 @@ import clases.MyLocation;
 
 public class CapturarFotos extends Activity {
 
-    private List<String> fileList = new ArrayList<String>();
+    private List<String> fileList;
     ListView listaGaleriaCuenta;
     Button boton;
     File mi_foto;
@@ -150,7 +151,6 @@ public class CapturarFotos extends Activity {
                 eliminarDir();
             }
         });
-
     }
 
     private void eliminarDir() {
@@ -179,11 +179,16 @@ public class CapturarFotos extends Activity {
                     listaGaleriaCuenta.setAdapter(lg);
                     //((ListaGaleriaCuentaAdapter)listaGaleriaCuenta.getAdapter()).notifyDataSetChanged();
                     aEliminar=new ArrayList<Integer>();
+
                 } catch (Exception ex) {
                     Log.e("ERROR ", "catch :" + ex);
                 }
+                ((Button) findViewById(R.id.btnBorrar)).setVisibility(View.INVISIBLE);
+                aEliminar = new ArrayList<Integer>();
+                ((TextView)findViewById(R.id.editTextCuenta)).setText("");
                 dialog.dismiss();
             }
+
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -191,7 +196,10 @@ public class CapturarFotos extends Activity {
                 // Code that is executed when clicking NO
                 ListaGaleriaCuentaAdapter lg = (ListaGaleriaCuentaAdapter) listaGaleriaCuenta.getAdapter();
                 listaGaleriaCuenta.setAdapter(lg);
-                aEliminar=new ArrayList<Integer>();
+                aEliminar = new ArrayList<Integer>();
+                ((Button) findViewById(R.id.btnBorrar)).setVisibility(View.INVISIBLE);
+                aEliminar = new ArrayList<Integer>();
+                ((TextView)findViewById(R.id.editTextCuenta)).setText("");
                 dialog.dismiss();
             }
         });
@@ -207,50 +215,45 @@ public class CapturarFotos extends Activity {
         if (requestCode == 0 && resultCode == RESULT_OK) {
             Log.e("ERROR ", "Error:" + mi_foto);
 
+            //mi_foto.createNewFile();
+
             try {
-                mi_foto.createNewFile();
 
-                try {
+                ((TextView) findViewById(R.id.editTextCuenta)).setText("");
 
-                    MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
-                        @Override
-                        public void gotLocation(Location location){
-                            //Got the location!
-                            if(location!=null) {
+                MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
+                    @Override
+                    public void gotLocation(Location location){
+                        //Got the location!
+                        if(location!=null) {
 
-                                Log.i("Ultima localización conocida:", "Latitud: " + location.getLatitude());
-                                Log.i("Ultima localización conocida:", "Longitud: " + location.getLongitude());
-                                GuardarFotos.getManager(directorioc)
-                                        .saveKey("Latitud", location.getLatitude() + "")
-                                        .saveKey("Longitud", location.getLongitude() + "");
+                            Log.i("Ultima localización conocida:", "Latitud: " + location.getLatitude());
+                            Log.i("Ultima localización conocida:", "Longitud: " + location.getLongitude());
+                            GuardarFotos.getManager(directorioc)
+                                    .saveKey("Latitud", location.getLatitude() + "")
+                                    .saveKey("Longitud", location.getLongitude() + "");
 
-                                getToast("La ubicación de la foto ha sido almacenada");
+                            getToast("La ubicación de la foto ha sido almacenada");
 
-                            }else{
-                                getToast("Error, Ubicación NO detectada");
-                                GuardarFotos.getManager(directorioc)
-                                        .saveKey("Latitud", "Por favor, actualice")
-                                        .saveKey("Longitud", "datos de ubicación...");
-                            }
-
+                        }else{
+                            getToast("Error, Ubicación NO detectada");
+                            GuardarFotos.getManager(directorioc)
+                                    .saveKey("Latitud", "Por favor, actualice")
+                                    .saveKey("Longitud", "datos de ubicación...");
                         }
-                    };
-                    MyLocation myLocation = new MyLocation();
-                    myLocation.getLocation(this, locationResult);
-                    getToast("Esperando ubicación...");
 
-                }catch (Exception ignored){
-                    ignored.printStackTrace();
-                }
+                    }
+                };
+                MyLocation myLocation = new MyLocation();
+                myLocation.getLocation(this, locationResult);
+                getToast("Esperando ubicación...");
 
-                ListaGaleriaCuentaAdapter lg = (ListaGaleriaCuentaAdapter) listaGaleriaCuenta.getAdapter();
-                lg.add(directorioc.getPath());
-
-                listaGaleriaCuenta.setAdapter(lg);
-
-            } catch (IOException ex) {
-                Log.e("ERROR ", "catch :" + ex);
+            }catch (Exception ignored){
+                ignored.printStackTrace();
             }
+
+            ListDir(directorio);
+
         }
     }
 
@@ -267,7 +270,7 @@ public class CapturarFotos extends Activity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
         String date = dateFormat.format(new Date());
         Log.i("INFORMACION", "Codigo :" + date);
-        return date;
+        return date.replace(":","_");
     }
 
     /////////////////////////////////
@@ -275,6 +278,7 @@ public class CapturarFotos extends Activity {
     void ListDir(File directorio){
         File[] files = ordenarPrFecha(directorio.listFiles());
         Log.i("Informacion", "valor files" +files);
+        fileList = new ArrayList<String>();
         for (File file : files) {
             fileList.add(file.getPath());
         }
