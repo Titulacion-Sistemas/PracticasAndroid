@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,7 +121,7 @@ public class CapturarFotos extends Activity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Button btnBorrar = (Button) findViewById(R.id.btnBorrar);
                 try {
-                    Log.i("Child...",""+listaGaleriaCuenta.getChildAt(position)+"");
+                    Log.i("Child...",""+((TextView)((LinearLayout)listaGaleriaCuenta.getChildAt(position)).findViewById(R.id.txtCuentaLista)).getText()+"");
                     if (aEliminar.indexOf((Object)position)==-1) {
                         aEliminar.add(position);
                         listaGaleriaCuenta.getChildAt(position).setBackgroundColor(Color.LTGRAY);
