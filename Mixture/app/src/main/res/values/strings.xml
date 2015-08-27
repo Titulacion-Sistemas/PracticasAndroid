@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Coniel.App(Beta)</string>
+    <string name="action_settings">Propiedades</string>
+    <string name="fotos">Fotos</string>
+    <string name="datos_de_abonado">Buscar</string>
+
+    <string name="navigation_drawer_open">Abrir navegador</string>
+    <string name="navigation_drawer_close">Cerrar navegador</string>
+
+    <string name="acercade">Acerca de</string>
+
+    <string-array name="spinnerbusqueda">
+        <item>Cuenta</item>
+        <item>Medidor</item>
+        <item>Nombre</item>
+        <item>Geocodigo</item>
+    </string-array>
+
+    <string name="strTomaFoto">Capturar</string>
+    <string name="title_activity_my">MyActivity</string>
+    <string name="titulo">Ingrese los Datos</string>
+    <string name="dato">Cuenta</string>
+    <string name="textoBoton2">Borrar</string>
+    <string name="textoBoton">Nuevo</string>
+    <string name="tituloApp"> Fotos de Campo </string>
+    <string name="title_activity_lista_galeria_diaria">ListaGaleriaDiaria</string>
+    <string name="title_activity_principal">Control de Fotos</string>
+    <string name="title_activity_cuentas">Cuentas</string>
+    <string name="title_activity_galeria">Galeria</string>
+    <string name="textibtnagregar">Agregar</string>
+    <string name="textobtnEliminar">Eliminar</string>
+    <string name="textactualizargeo">Mi Ubicación</string>
+    <string name="actividad_nueva">Actividades</string>
+    <string name="app_Suntitle">Soporte de actividades operativas</string>
+    <string name="fotos_subtitle">Gestión de fotos</string>
+    <string name="actividad_nueva_subtitle">Fotos de actividades</string>
+    <string name="salir">Salir</string>
+    <string name="inicio">Inicio</string>
+
+    <string name="cuenta">Cuenta</string>
+    <string name="nombre">Abonado</string>
+    <string name="ruCi">Ruc / Cédula</string>
+    <string name="geo">Geocódigo</string>
+    <string name="direccion">Dirección</string>
+    <string name="interseccion">Intersección</string>
+    <string name="urbanizacion">Urbanización</string>
+    <string name="estado">Estado</string>
+    <string name="deuda">Deuda</string>
+    <string name="mesesDeuda">Meses Adeudados</string>
+    <string name="numFabrica">Número de Fabrica</string>
+    <string name="numSerie">Número de Serie</string>
+    <string name="tipoMedidor">Tipo de Medidor</string>
+    <string name="tecnologia">Tecnología</string>
+    <string name="tensión">Tensión</string>
+    <string name="amperaje">Amperaje</string>
+    <string name="fases">Fases</string>
+    <string name="hilos">Hilos</string>
+    <string name="digitos">Digitos</string>
+    <string name="fechaInst">Fecha/Inst.</string>
+    <string name="lecturaInst">Lectura/Inst.</string>
+    <string name="fechaDesinst">Fecha/Desinst.</string>
+    <string name="lecturaDesinst">Lectura/Desinst.</string>
+
+    <string name="fabricainst">Fabrica</string>
+    <string name="serialins">Serial</string>
+    <string name="marca">Marca</string>
+    <string name="tipo">Tipo</string>
+    <string name="lectura">Lectura</string>
+    <string name="URL_SERVER">http://coniel.servehttp.com:8000/bandroid/</string>
+
+</resources>

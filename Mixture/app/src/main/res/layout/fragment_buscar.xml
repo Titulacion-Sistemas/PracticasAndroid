@@ -1,0 +1,160 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.gao.coniel.coniel_gao.Buscar">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_centerInParent="true"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        style="@style/LayoutStilo">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="Buscar por:"
+                            android:id="@+id/textViewbuscarpor"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"/>
+
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinnerBuscar"
+                            android:spinnerMode="dropdown"
+                            android:entries="@array/spinnerbusqueda"/>
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/datoBuscar"
+                            android:inputType="none"
+                            android:padding="10dp"
+                            android:singleLine="true"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:id="@+id/carga"
+                                    android:visibility="invisible"
+                                    android:gravity="center"
+                                    android:layout_centerInParent="true">
+
+                                    <com.github.rahatarmanahmed.cpv.CircularProgressView
+                                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/progress_view"
+                                        android:layout_width="40dp"
+                                        android:layout_height="40dp"
+                                        app:cpv_animAutostart="true"
+                                        app:cpv_indeterminate="true" />
+
+                                </LinearLayout>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="10dp"
+                                android:orientation="vertical"
+                                android:layout_alignParentRight="true" >
+
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Buscar"
+                                    android:layout_centerVertical="true"
+                                    android:textAlignment="center"
+                                    android:id="@+id/btnBuscarDatos"
+                                    style="@style/ButtonStilo"
+                                    android:textColor="#fefef0"
+                                    android:textSize="15dp"
+                                    android:padding="10dp"
+                                    android:drawableLeft="@drawable/ic_action_search"
+                                    android:clickable="true"
+
+                                    android:gravity="bottom"/>
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="15dp">
+                    <!--
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"-->
+
+                    <ListView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/listaCabecera"
+                        android:background="@android:color/holo_blue_light"
+                        android:clickable="false"/>
+
+                    <ListView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/listaContenido"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

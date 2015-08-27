@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="actividad_nueva">Nueva Actividad</string>
+    <string name="app_Suntitle">Soporte de actividades operativas</string>
+    <string name="fotos_subtitle">Gestión de fotos</string>
+    <string name="salir">Salir</string>
+    <string name="URL_SERVER">http://192.168.10.45:8000/bandroid/</string>
+</resources>
