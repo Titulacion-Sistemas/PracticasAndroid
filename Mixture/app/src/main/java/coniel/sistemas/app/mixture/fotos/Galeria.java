@@ -11,8 +11,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -28,6 +30,14 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -38,6 +48,8 @@ import java.util.Date;
 
 import coniel.sistemas.app.mixture.Contenedor;
 import coniel.sistemas.app.mixture.R;
+import coniel.sistemas.app.mixture.classes.CoordinateConversion;
+import coniel.sistemas.app.mixture.classes.coordUTM;
 import coniel.sistemas.app.mixture.fotos.classes.GuardarFotos;
 
 
@@ -50,9 +62,10 @@ public class Galeria extends Fragment {
     String fecha;
     File mi_foto;
     View rootView;
+    String titulo = "null";
     AlertDialog.Builder builder;
     private boolean gps_enabled=false;
-    private boolean network_enabled=false;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,7 +123,8 @@ public class Galeria extends Fragment {
         });
 
         String[] r = ruta.split("/");
-        getActivity().setTitle(r[r.length - 1]);
+        titulo = r[r.length - 1];
+        getActivity().setTitle(titulo);
         cambiarLatLong();
 
         ((FloatingActionButton)rootView.findViewById(R.id.nuevafoto)).setOnClickListener(new View.OnClickListener() {
@@ -126,6 +140,16 @@ public class Galeria extends Fragment {
                 eliminarFotos();
             }
         });
+
+        ((FloatingActionButton)rootView.findViewById(R.id.posicion)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getLocation()) getToast("Esperando Ubicacion...");
+                else getToast("Imposible iniciar búsqueda, habilite el dispositivo GPS......");
+            }
+        });
+
+
 
         try {
             ((Contenedor)getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
@@ -149,7 +173,7 @@ public class Galeria extends Fragment {
                 return true;
             case R.id.menu_geo:
                 if(getLocation()) getToast("Esperando Ubicacion...");
-                else getToast("Imposible iniciar búsqueda, habilite dispositivos de ubicación......");
+                else getToast("Imposible iniciar búsqueda, habilite el dispositivo GPS......");
                 return true;
             case R.id.menu_new:
                 eliminarFotos();
@@ -160,11 +184,13 @@ public class Galeria extends Fragment {
     }
 
     private void getToast(String s){
-        Toast.makeText(
-                getActivity(),
-                s,
-                Toast.LENGTH_SHORT
-        ).show();
+        try {
+            Toast.makeText(
+                    getActivity(),
+                    s,
+                    Toast.LENGTH_SHORT
+            ).show();
+        }catch (Exception e){}
     }
 
     LocationManager lm;
@@ -173,22 +199,20 @@ public class Galeria extends Fragment {
         lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         try{gps_enabled=lm.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
-        try{network_enabled=lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ex){}
 
-        if(!gps_enabled && !network_enabled)
+        if(!gps_enabled)
             return false;
 
-        if(gps_enabled)
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-        if(network_enabled)
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
+        else
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListenerGps);
+
 
         return true;
     }
 
     LocationListener locationListenerGps = new LocationListener() {
         public void onLocationChanged(Location location) {
-            actualizarLoc(location);
+            actualizarLoc(location, titulo);
             lm.removeUpdates(this);
             lm.removeUpdates(locationListenerNetwork);
         }
@@ -199,7 +223,7 @@ public class Galeria extends Fragment {
 
     LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
-            actualizarLoc(location);
+            actualizarLoc(location, titulo);
             lm.removeUpdates(this);
             lm.removeUpdates(locationListenerGps);
         }
@@ -211,10 +235,13 @@ public class Galeria extends Fragment {
 
     private void cambiarLatLong() {
         ((TextView) rootView.findViewById(R.id.lat)).setText(
-                "Latitud : "+ GuardarFotos.getManager(new File(ruta)).getStringKey("Latitud")
+                "Al Este : "+ GuardarFotos.getManager(new File(ruta)).getStringKey("Easting")
         );
         ((TextView) rootView.findViewById(R.id.longit)).setText(
-                "Longitud : " + GuardarFotos.getManager(new File(ruta)).getStringKey("Longitud")
+                "Al Norte : " + GuardarFotos.getManager(new File(ruta)).getStringKey("Norting")
+        );
+        ((TextView) rootView.findViewById(R.id.precision)).setText(
+                "Precision : " + GuardarFotos.getManager(new File(ruta)).getStringKey("Precision")
         );
     }
 
@@ -335,15 +362,39 @@ public class Galeria extends Fragment {
         return sortedByDate;
     }
 
-    private void actualizarLoc(Location location){
+    private void actualizarLoc(Location location, String cuenta){
         if(location!=null){
             Log.i("Localización Obtenida:", "Latitud: " + location.getLatitude());
             Log.i("Localización Obtenida:", "Longitud: " + location.getLongitude());
+
+            CoordinateConversion transfor = new CoordinateConversion();
+            coordUTM cUtm = transfor.latLon2UTM(location.getLatitude(), location.getLongitude());
+
             GuardarFotos.getManager(new File(ruta))
                     .saveKey("Latitud", location.getLatitude()+"")
-                    .saveKey("Longitud", location.getLongitude() + "");
+                    .saveKey("Longitud", location.getLongitude() + "")
+                    .saveKey("Precision", location.getAccuracy() + "")
+                    .saveKey("LongZone", cUtm.getLongZone())
+                    .saveKey("LatZone", cUtm.getLatZone())
+                    .saveKey("Easting", cUtm.getEasting() + "")
+                    .saveKey("Norting", cUtm.getNorting() + "");
 
             cambiarLatLong();
+
+            String ur = (getString(R.string.URL_SERVER)+ "geoandroid/" + titulo + "/").replace(" ", "_");
+            // fotmato de envio :  dato, lat, long, precision,  latzone, longzone, aleste, alnorte
+            ur = ur
+                    + location.getLatitude()
+                    + "/" + location.getLongitude()
+                    + "/" + location.getAccuracy()
+                    + "/" + cUtm.getLatZone()
+                    + "/" + cUtm.getLongZone()
+                    + "/" + cUtm.getEasting()
+                    + "/" + cUtm.getNorting() + "/";
+            Log.e("URL consultada", ur);
+            asyncGuardarPosicion guardarpos = new asyncGuardarPosicion();
+            guardarpos.execute(new String[]{ur});
+
             getToast("Exito...");
 
         }else{
@@ -359,4 +410,64 @@ public class Galeria extends Fragment {
 
         super.onDetach();
     }
+
+
+    //EN SEGUNDO PLANO
+    private class asyncGuardarPosicion extends AsyncTask<String, Float, String> {
+
+        private String toast="null";
+
+
+        public asyncGuardarPosicion() {}
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response;
+            String responseString = "null";
+
+            try {
+                response = httpclient.execute(new HttpGet(params[0]));
+                StatusLine statusLine = response.getStatusLine();
+                if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    response.getEntity().writeTo(out);
+                    responseString = out.toString();
+                    out.close();
+                } else{
+                    //Closes the connection.
+                    response.getEntity().getContent().close();
+                    throw new IOException(statusLine.getReasonPhrase());
+                }
+            } catch (IOException e) {
+                Log.e("Error: ", e+"");
+            }
+
+
+            return responseString;
+
+        }
+
+        @Override
+        protected void onPostExecute(String str) {
+            super.onPostExecute(str);
+        }
+
+        @Override
+        protected void onCancelled(String s) {
+            super.onCancelled(s);
+        }
+
+
+    }
+
+
+
 }

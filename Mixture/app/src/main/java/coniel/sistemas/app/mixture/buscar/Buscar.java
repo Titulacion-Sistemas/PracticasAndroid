@@ -130,7 +130,7 @@ public class Buscar extends Fragment {
                 break;
             }
             case 1: {
-                txtDato.setInputType(InputType.TYPE_CLASS_NUMBER);
+                txtDato.setInputType(InputType.TYPE_CLASS_TEXT);
                 break;
             }
             case 2: {
@@ -295,7 +295,7 @@ public class Buscar extends Fragment {
             HttpResponse response;
             String responseString = "null";
             try {
-                response = httpclient.execute(new HttpGet(getString(R.string.URL_SERVER)+params[0]+"/"+params[1]+"/"));
+                response = httpclient.execute(new HttpGet(getString(R.string.URL_SERVER)+"bandroid/"+params[0]+"/"+params[1]+"/"));
                 StatusLine statusLine = response.getStatusLine();
                 if(statusLine.getStatusCode() == HttpStatus.SC_OK){
                     ByteArrayOutputStream out = new ByteArrayOutputStream();

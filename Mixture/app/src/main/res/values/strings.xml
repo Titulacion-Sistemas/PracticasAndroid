@@ -66,6 +66,7 @@
     <string name="marca">Marca</string>
     <string name="tipo">Tipo</string>
     <string name="lectura">Lectura</string>
-    <string name="URL_SERVER">http://coniel.servehttp.com:8000/bandroid/</string>
+    <string name="URL_SERVER">http://coniel.servehttp.com:8000/</string>
+    <!--<string name="URL_SERVER">http://192.168.0.200:8000/</string>-->
 
 </resources>

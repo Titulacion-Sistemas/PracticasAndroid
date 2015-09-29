@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,7 +15,7 @@ public class MyLocation {
     LocationManager lm;
     LocationResult locationResult;
     boolean gps_enabled=false;
-    boolean network_enabled=false;
+
 
     public boolean getLocation(Context context, LocationResult result)
     {
@@ -25,18 +26,18 @@ public class MyLocation {
 
         //exceptions will be thrown if provider is not permitted.
         try{gps_enabled=lm.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
-        try{network_enabled=lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ex){}
+
 
         //don't start listeners if no provider is enabled
-        if(!gps_enabled && !network_enabled)
+        if(!gps_enabled )
             return false;
 
-        if(gps_enabled)
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-        if(network_enabled)
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
+        else
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListenerGps);
+
         timer1=new Timer();
-        timer1.schedule(new GetLastLocation(), 20000);
+        timer1.schedule(new GetLastLocation(context), 20000);
+
         return true;
     }
 
@@ -65,34 +66,30 @@ public class MyLocation {
     };
 
     class GetLastLocation extends TimerTask {
+        Context ctx=null;
+        public GetLastLocation(Context context) {
+            this.ctx = context;
+        }
+
         @Override
         public void run() {
             lm.removeUpdates(locationListenerGps);
             lm.removeUpdates(locationListenerNetwork);
 
-            Location net_loc=null, gps_loc=null;
+            Location gps_loc=null;
             if(gps_enabled)
                 gps_loc=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(network_enabled)
-                net_loc=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            else
+                Settings.Secure.putString(ctx.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED, "network,gps");
 
             //if there are both values use the latest one
-            if(gps_loc!=null && net_loc!=null){
-                if(gps_loc.getTime()>net_loc.getTime())
+            if(gps_loc!=null){
+
                     locationResult.gotLocation(gps_loc);
-                else
-                    locationResult.gotLocation(net_loc);
+
                 return;
             }
 
-            if(gps_loc!=null){
-                locationResult.gotLocation(gps_loc);
-                return;
-            }
-            if(net_loc!=null){
-                locationResult.gotLocation(net_loc);
-                return;
-            }
             locationResult.gotLocation(null);
         }
     }

@@ -228,8 +228,8 @@ public class CapturarFotos extends Activity {
                         //Got the location!
                         if(location!=null) {
 
-                            Log.i("Ultima localización conocida:", "Latitud: " + location.getLatitude());
-                            Log.i("Ultima localización conocida:", "Longitud: " + location.getLongitude());
+                            //Log.i("Ultima localización conocida:", "Latitud: " + location.getLatitude());
+                            //Log.i("Ultima localización conocida:", "Longitud: " + location.getLongitude());
                             GuardarFotos.getManager(directorioc)
                                     .saveKey("Latitud", location.getLatitude() + "")
                                     .saveKey("Longitud", location.getLongitude() + "");
@@ -245,9 +245,10 @@ public class CapturarFotos extends Activity {
 
                     }
                 };
-                MyLocation myLocation = new MyLocation();
-                myLocation.getLocation(this, locationResult);
-                getToast("Esperando ubicación...");
+                //MyLocation myLocation = new MyLocation();
+                //myLocation.getLocation(this, locationResult);
+                //getToast("Esperando ubicación...");
+                getToast("Listo... ya no se guarda su ubicación...");
 
             }catch (Exception ignored){
                 ignored.printStackTrace();

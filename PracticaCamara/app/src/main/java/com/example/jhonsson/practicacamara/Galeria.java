@@ -277,7 +277,7 @@ public class Galeria extends Activity{
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
         String date = dateFormat.format(new Date());
         Log.i("INFORMACION", "Codigo :" + date);
-        return date;
+        return date.replace(":","_");
     }
 
     void openImg(File file)

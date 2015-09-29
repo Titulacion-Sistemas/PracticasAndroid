@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -24,6 +25,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -35,6 +46,11 @@ import java.util.List;
 
 import coniel.sistemas.app.mixture.Contenedor;
 import coniel.sistemas.app.mixture.R;
+import coniel.sistemas.app.mixture.buscar.ContenedorBusqueda;
+import coniel.sistemas.app.mixture.buscar.classes.Abonado;
+import coniel.sistemas.app.mixture.buscar.classes.Medidor;
+import coniel.sistemas.app.mixture.classes.CoordinateConversion;
+import coniel.sistemas.app.mixture.classes.coordUTM;
 import coniel.sistemas.app.mixture.fotos.classes.GuardarFotos;
 import coniel.sistemas.app.mixture.fotos.classes.MyLocation;
 
@@ -48,6 +64,7 @@ public class CapturarFotos extends Fragment {
     File directorio , directorioc;
     ArrayList<Integer> aEliminar = new ArrayList<Integer>();
     View rootView;
+    String dato;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +95,7 @@ public class CapturarFotos extends Fragment {
             @Override
             public void onClick(View v) {
                 TextView txtNumCuenta = (TextView) rootView.findViewById(R.id.editTextCuenta);
-
+                dato = txtNumCuenta.getText()+"";
                 if(! txtNumCuenta.getText().toString().equals("")) {
                     // Agregue
                     directorioc = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/CONIEL/"+ fecha + "/" + txtNumCuenta.getText() + "/");
@@ -95,7 +112,7 @@ public class CapturarFotos extends Fragment {
                     //Abre la camara para tomar la foto
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                    //txtNumCuenta.setText("");
+                    txtNumCuenta.setText("");
 
                     //Guarda imagen
                     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
@@ -229,11 +246,16 @@ public class CapturarFotos extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //Comprobamos que la foto se a realizado
+        final String uri = getString(R.string.URL_SERVER)+ "geoandroid/" + dato + "/";
 
         if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             Log.e("ERROR ", "Error:" + mi_foto);
 
-            //mi_foto.createNewFile();
+            try {
+                mi_foto.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             try {
 
@@ -245,16 +267,38 @@ public class CapturarFotos extends Fragment {
 
                             Log.i("Ultima localización conocida:", "Latitud: " + location.getLatitude());
                             Log.i("Ultima localización conocida:", "Longitud: " + location.getLongitude());
+
+                            CoordinateConversion transfor = new CoordinateConversion();
+                            coordUTM cUtm = transfor.latLon2UTM(location.getLatitude(), location.getLongitude());
+
                             GuardarFotos.getManager(directorioc)
                                     .saveKey("Latitud", location.getLatitude() + "")
-                                    .saveKey("Longitud", location.getLongitude() + "");
-
+                                    .saveKey("Longitud", location.getLongitude() + "")
+                                    .saveKey("Precision", location.getAccuracy() + "")
+                                    .saveKey("LongZone", cUtm.getLongZone())
+                                    .saveKey("LatZone", cUtm.getLatZone())
+                                    .saveKey("Easting", cUtm.getEasting() + "")
+                                    .saveKey("Norting", cUtm.getNorting()+"");
+                            String ur = uri.replace(" ", "_");
+                            // fotmato de envio :  dato, lat, long, precision,  latzone, longzone, aleste, alnorte
+                            ur = ur
+                                    + location.getLatitude()
+                                    + "/" + location.getLongitude()
+                                    + "/" + location.getAccuracy()
+                                    + "/" + cUtm.getLatZone()
+                                    + "/" + cUtm.getLongZone()
+                                    + "/" + cUtm.getEasting()
+                                    + "/" + cUtm.getNorting() + "/";
+                            Log.e("URL consultada",ur);
+                            asyncGuardarPosicion guardarpos = new asyncGuardarPosicion();
+                            guardarpos.execute(new String[]{ur});
 
                         }else{
                             getToast("Error, Ubicación NO detectada");
                             GuardarFotos.getManager(directorioc)
-                                    .saveKey("Latitud", "Por favor, actualice")
-                                    .saveKey("Longitud", "datos de ubicación...");
+                                    .saveKey("Easting", "Por favor, actualice")
+                                    .saveKey("Norting", "datos de ubicación...")
+                                    .saveKey("Precision", "-");
                         }
 
                     }
@@ -276,11 +320,13 @@ public class CapturarFotos extends Fragment {
     }
 
     private void getToast(String s){
-        Toast.makeText(
-                getActivity().getApplicationContext(),
-                s,
-                Toast.LENGTH_SHORT
-        ).show();
+        try {
+            Toast.makeText(
+                    getActivity().getApplicationContext(),
+                    s,
+                    Toast.LENGTH_SHORT
+            ).show();
+        }catch (Exception e){}
     }
 
 
@@ -336,5 +382,61 @@ public class CapturarFotos extends Fragment {
             ((Button) rootView.findViewById(R.id.btnBorrar)).setVisibility(View.INVISIBLE);
     }
 
+
+    //EN SEGUNDO PLANO
+    private class asyncGuardarPosicion extends AsyncTask<String, Float, String> {
+
+        private String toast="null";
+
+
+        public asyncGuardarPosicion() {}
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response;
+            String responseString = "null";
+
+            try {
+                response = httpclient.execute(new HttpGet(params[0]));
+                StatusLine statusLine = response.getStatusLine();
+                if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    response.getEntity().writeTo(out);
+                    responseString = out.toString();
+                    out.close();
+                } else{
+                    //Closes the connection.
+                    response.getEntity().getContent().close();
+                    throw new IOException(statusLine.getReasonPhrase());
+                }
+            } catch (IOException e) {
+                Log.e("Error: ", e+"");
+            }
+
+
+            return responseString;
+
+        }
+
+        @Override
+        protected void onPostExecute(String str) {
+            super.onPostExecute(str);
+        }
+
+        @Override
+        protected void onCancelled(String s) {
+            super.onCancelled(s);
+        }
+
+
+    }
 
 }
